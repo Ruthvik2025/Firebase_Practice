@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:firebase_practice/screens/home_page.dart';
-import 'package:firebase_practice/screens/email%20auth/login_screen.dart';
 import 'package:firebase_practice/screens/home_page.dart';
+import 'package:firebase_practice/screens/phone%20auth/sign_with_phone.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: "firebase",
       home: (FirebaseAuth.instance.currentUser != null)
           ? const HomePage()
-          : const LoginScreen(),
+          : const SignWithPhone(),
     );
   }
 }

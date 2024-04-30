@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.popUntil(context, (route) => route.isFirst);
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            MaterialPageRoute(builder: (context) => const HomePage()),
           );
         }
       } on FirebaseAuthException catch (e) {
