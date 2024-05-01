@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_practice/screens/home_page.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +23,16 @@ class _VerifyOtpState extends State<VerifyOtp> {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       if (userCredential.user != null) {
+        // ignore: use_build_context_synchronously
         Navigator.popUntil(context, (route) => route.isFirst);
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     } on FirebaseAuthException catch (e) {
-      print(
+      log(
         e.code.toString(),
       );
     }

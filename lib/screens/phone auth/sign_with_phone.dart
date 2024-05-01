@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_practice/screens/phone%20auth/verify_otp.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +32,7 @@ class _SignWithPhoneState extends State<SignWithPhone> {
       verificationCompleted:
           (credential) {}, //it comes when verificatioon completed
       verificationFailed: (error) {
-        print(error.code.toString()); //it uses when verification failed
+        log(error.code.toString()); //it uses when verification failed
       },
       codeAutoRetrievalTimeout: (verificationId) {},
       timeout: const Duration(seconds: 30),

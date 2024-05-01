@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -19,22 +21,25 @@ class _SignupScreenState extends State<SignupScreen> {
     String cPassword = cpasswordcontroller.text.trim();
 
     if (email == '' || password == '' || cPassword == '') {
-      print('please fill the details');
+      log('please fill the details');
     } else if (password != cPassword) {
-      print("passwords not matching");
+      log("passwords not matching");
     } else {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('User created successfully'),
           backgroundColor: Colors.green,
         ));
         if (userCredential.user != null) {
+          // ignore: use_build_context_synchronously
           Navigator.pop(context);
         }
       } on FirebaseAuthException catch (e) {
-        print(e.toString());
+        log(e.toString());
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(e.code.toString()),
           backgroundColor: Colors.red,

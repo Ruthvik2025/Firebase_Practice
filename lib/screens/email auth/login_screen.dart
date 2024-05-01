@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_practice/screens/email%20auth/signup_screen.dart';
 import 'package:firebase_practice/screens/home_page.dart';
@@ -18,20 +20,22 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = passwordController.text.trim();
 
     if (email == '' || password == '') {
-      print("PLease Fill the details");
+      log("PLease Fill the details");
     } else {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
         if (userCredential.user != null) {
+          // ignore: use_build_context_synchronously
           Navigator.popUntil(context, (route) => route.isFirst);
           Navigator.pushReplacement(
+            // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(builder: (context) => const HomePage()),
           );
         }
       } on FirebaseAuthException catch (e) {
-        print(e.code.toString());
+        log(e.code.toString());
       }
     }
   }
