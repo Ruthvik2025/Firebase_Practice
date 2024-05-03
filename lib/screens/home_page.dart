@@ -13,15 +13,20 @@ class HomePage extends StatefulWidget {
 class _MyWidgetState extends State<HomePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController ageCntroller = TextEditingController();
 
   void saveInfo() async {
     String name = nameController.text.trim();
     String email = emailController.text.trim();
+    String ageString = ageCntroller.text.trim();
+
+    int age = int.parse(ageString);
 
     nameController.clear();
     emailController.clear();
+    ageCntroller.clear();
 
-    Map<String, dynamic> UserData = {'name ': name, 'email': email};
+    Map<String, dynamic> UserData = {'name ': name, 'email': email, 'age': age};
     await FirebaseFirestore.instance.collection('users').add(UserData);
   }
 
@@ -69,6 +74,13 @@ class _MyWidgetState extends State<HomePage> {
           const SizedBox(
             height: 14,
           ),
+          TextField(
+            controller: ageCntroller,
+            decoration: const InputDecoration(labelText: 'Enter a age'),
+          ),
+          const SizedBox(
+            height: 14,
+          ),
           TextButton(
             onPressed: () {
               saveInfo();
@@ -80,8 +92,28 @@ class _MyWidgetState extends State<HomePage> {
           ),
           Expanded(
             child: StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('users').snapshots(),
+                //for filtering data
+                // stream: FirebaseFirestore.instance
+                //     .collection('users')
+                //     .where('age', isGreaterThanOrEqualTo: 18)
+                //     .snapshots(),
+
+                //orderd by -for making ordered data
+                // stream: FirebaseFirestore.instance
+                //     .collection('users')
+                //     .orderBy(
+                //       'age',
+                //     )
+                //     .snapshots(),
+
+                //ordered and filtered
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .orderBy(
+                      'age',
+                    )
+                    .where('age', isGreaterThanOrEqualTo: 24)
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {
                     if (snapshot.hasData && snapshot.data != null) {
@@ -96,7 +128,8 @@ class _MyWidgetState extends State<HomePage> {
                             leading: IconButton(
                                 onPressed: () {},
                                 icon: const Icon(Icons.update)),
-                            title: Text(userMap["name "]),
+                            title:
+                                Text(userMap["name "] + ' (${userMap['age']})'),
                             subtitle: Text(userMap["email"]),
                             trailing: IconButton(
                                 onPressed: () {
