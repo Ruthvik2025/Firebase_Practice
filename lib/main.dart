@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
       home: (FirebaseAuth.instance.currentUser != null)
           ? const HomePage()
           : const SignWithPhone(),
+      theme: ThemeData.dark(useMaterial3: true),
     );
   }
 }
