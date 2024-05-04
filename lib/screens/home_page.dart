@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_practice/screens/email%20auth/signup_screen.dart';
 import 'package:firebase_practice/screens/phone%20auth/sign_with_phone.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +53,49 @@ class _MyWidgetState extends State<HomePage> {
     await FirebaseFirestore.instance.collection('users').add(userData);
     setState(() {
       profilePic = null;
+    });
+  }
+
+  void getInitialMessage() async {
+    RemoteMessage? message =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (message != null) {
+      if (message.data["page"] == "email") {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const SignupScreen()));
+      } else if (message.data["page"] == "phone") {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const SignWithPhone()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Invalid Page!"),
+          duration: Duration(seconds: 5),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("${message.notification!.body}"),
+          backgroundColor: Colors.green,
+        ),
+      );
+      // Handle received message
+      log('Received message: ${message.notification?.title}');
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("App was opened by a notification"),
+        duration: Duration(seconds: 10),
+        backgroundColor: Colors.green,
+      ));
     });
   }
 
