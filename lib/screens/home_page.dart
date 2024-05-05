@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_practice/screens/email%20auth/signup_screen.dart';
 import 'package:firebase_practice/screens/phone%20auth/sign_with_phone.dart';
+import 'package:firebase_practice/serive/auth_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -105,10 +106,11 @@ class _MyWidgetState extends State<HomePage> {
 
   void signOut() async {
     await FirebaseAuth.instance.signOut();
+    AuthSerive.logout();
     Navigator.popUntil(context, (route) => route.isFirst);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const SignWithPhone()),
+      MaterialPageRoute(builder: (context) => const SignupScreen()),
     );
   }
 

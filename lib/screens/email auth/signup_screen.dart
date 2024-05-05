@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_practice/screens/email%20auth/login_screen.dart';
+import 'package:firebase_practice/screens/home_page.dart';
+import 'package:firebase_practice/serive/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -81,14 +84,51 @@ class _SignupScreenState extends State<SignupScreen> {
             const SizedBox(
               height: 20,
             ),
-            TextButton(
-              onPressed: () {
-                createAccount();
-              },
-              style:
-                  ButtonStyle(iconColor: WidgetStateProperty.all(Colors.blue)),
-              child: const Text('Create a account'),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    createAccount();
+                  },
+                  style: ButtonStyle(
+                      iconColor: WidgetStateProperty.all(Colors.blue)),
+                  child: const Text('Create a account'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
+                  },
+                  // style: ButtonStyle(
+                  //     iconColor: WidgetStateProperty.all(Colors.blue)),
+                  child: const Text('Sign In'),
+                ),
+              ],
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    await AuthSerive.siginWithGoole();
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()));
+                  },
+                  child: SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: Image.asset("assets/goole.png"),
+                  ),
+                )
+              ],
+            )
           ],
         ),
       ),
