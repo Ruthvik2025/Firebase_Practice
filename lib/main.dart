@@ -1,11 +1,16 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_practice/firebase_options.dart';
 import 'package:firebase_practice/screens/email%20auth/signup_screen.dart';
 import 'package:firebase_practice/screens/home_page.dart';
 import 'package:firebase_practice/serive/firebase_msgnotification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'firebase_options.dart';
+FlutterLocalNotificationsPlugin notificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,30 +19,25 @@ void main() async {
   );
 
   await NotificationService.intialize();
-  // DocumentSnapsho;t snapshot = await FirebaseFirestore.instance
-  //     .collection('users')
-  //     .doc('N8LUEsg8oAaHRkTRRj74')
-  //     .get();
-  // log(snapshot.data().toString());
-  // // log(snapshot.docs.toString());
-  // // for (var doc in snapshot.docs) {
-  // //   log(doc.data().toString());
-  // // }
-  // log('users fetcehd  successfully');
 
-  // Map<String, dynamic> userdata = {
-  //   'name': "coderg",
-  //   'email': 'email111@gmail.com'
-  // };
+  AndroidInitializationSettings androidInitializationSettings =
+      const AndroidInitializationSettings("@mipmap/ic_launcher");
 
-  // await FirebaseFirestore.instance
-  //     .collection('users')
-  //     .doc('userInfo')
-  //     .set(userdata);
-  // log("user added successfully");
+  DarwinInitializationSettings darwinInitializationSettings =
+      const DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestSoundPermission: true,
+          requestBadgePermission: true,
+          requestCriticalPermission: true);
 
-  // await FirebaseFirestore.instance.collection('users').doc('userInfo').delete();
-  // log("user updated successfully");
+  InitializationSettings initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: darwinInitializationSettings);
+
+  bool? initialized = await notificationsPlugin.initialize(
+    initializationSettings,
+  );
+  log("intialized:$initialized");
 
   runApp(const MyApp());
 }

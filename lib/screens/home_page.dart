@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_practice/main.dart';
 import 'package:firebase_practice/screens/email%20auth/signup_screen.dart';
 import 'package:firebase_practice/screens/phone%20auth/sign_with_phone.dart';
 import 'package:firebase_practice/serive/auth_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -78,6 +80,67 @@ class _MyWidgetState extends State<HomePage> {
     }
   }
 
+  void delete(String docId) async {
+    await FirebaseFirestore.instance.collection('users').doc(docId).delete();
+  }
+
+  void signOut() async {
+    await FirebaseAuth.instance.signOut();
+    AuthSerive.logout();
+    Navigator.popUntil(context, (route) => route.isFirst);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const SignupScreen()),
+    );
+  }
+
+  void showNotification() async {
+    AndroidNotificationDetails androidNotificationDetails =
+        const AndroidNotificationDetails("Sample", "android sample noti",
+            priority: Priority.max, importance: Importance.high);
+    DarwinNotificationDetails darwinNotificationDetails =
+        const DarwinNotificationDetails(
+      presentAlert: true,
+      presentSound: true,
+      presentBadge: true,
+    );
+
+    DateTime schedule = DateTime.now().add(const Duration(seconds: 5));
+
+    NotificationDetails notificationDetails = NotificationDetails(
+        android: androidNotificationDetails, iOS: darwinNotificationDetails);
+
+//     final location =  tz.getLocation("Asia/Calcutta");
+// final local = tz.TZDateTime.now(location);
+//scheduled local notifications
+    // await notificationsPlugin.zonedSchedule(
+    //   0,
+    //   "Sample Notification",
+    //   "This is a notification",
+    //   tz.TZDateTime.from(schedule, tz.getLocation("Asia/Calcutta")),
+    //   notificationDetails,
+    //   uiLocalNotificationDateInterpretation:
+    //       UILocalNotificationDateInterpretation.wallClockTime,
+    //   payload: "Notification payload",
+    // );
+    notificationsPlugin.show(
+        0, "sample", "this is sample notification", notificationDetails);
+  }
+
+  // void checkForNotification() async {
+  //   NotificationAppLaunchDetails? details =
+  //       await notificationsPlugin.getNotificationAppLaunchDetails();
+  //   if (details != null) {
+  //     if (details.didNotificationLaunchApp == true) {
+  //       NotificationResponse? response = details.notificationResponse;
+  //       if (response != null) {
+  //         String? payload = response.payload;
+  //         log("notification payload$payload");
+  //       }
+  //     }
+  //   }
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -98,20 +161,7 @@ class _MyWidgetState extends State<HomePage> {
         backgroundColor: Colors.green,
       ));
     });
-  }
-
-  void delete(String docId) async {
-    await FirebaseFirestore.instance.collection('users').doc(docId).delete();
-  }
-
-  void signOut() async {
-    await FirebaseAuth.instance.signOut();
-    AuthSerive.logout();
-    Navigator.popUntil(context, (route) => route.isFirst);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const SignupScreen()),
-    );
+    // checkForNotification();
   }
 
   @override
@@ -128,6 +178,10 @@ class _MyWidgetState extends State<HomePage> {
         ],
         backgroundColor: Colors.black,
         title: const Text("HomePage"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: showNotification,
+        child: const Icon(Icons.notification_add),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
